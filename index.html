@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cute Weather App</title>
+
+<style>
+body{
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(135deg,#74ebd5,#acb6e5);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.weather-card{
+  background:white;
+  padding:22px;
+  border-radius:18px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
+
+input{
+  width:85%;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-bottom:10px;
+}
+
+button{
+  padding:8px 18px;
+  border:none;
+  border-radius:20px;
+  background:#4CAF50;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
+button:hover{
+  background:#43a047;
+}
+
+img{
+  width:64px;
+}
+
+.details{
+  text-align:left;
+  font-size:13px;
+  margin-top:10px;
+}
+hr{ margin:10px 0; }
+</style>
+</head>
+
+<body>
+
+<div class="weather-card">
+  <h2>🌈 Weather App</h2>
+
+  <input type="text" id="city" placeholder="Enter city name 🌍">
+  <br>
+  <button onclick="getWeather()">Check Weather</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+const apiKey = "ee645a4e7b9d432eb31175406252312";
+
+function getWeather(){
+  const city = document.getElementById("city").value;
+  if(city===""){
+    alert("City ka naam likho 😊");
+    return;
+  }
+
+  fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`)
+  .then(res=>res.json())
+  .then(data=>{
+    document.getElementById("result").innerHTML = `
+      <h3>${data.location.name}, ${data.location.country}</h3>
+      <img src="https:${data.current.condition.icon}">
+      <p><b>${data.current.condition.text}</b></p>
+
+      <div class="details">
+        🌡 Temp: ${data.current.temp_c} °C  
+        <br>🤒 Feels like: ${data.current.feelslike_c} °C  
+        <br>💧 Humidity: ${data.current.humidity}%  
+        <br>💨 Wind: ${data.current.wind_kph} km/h  
+        <br>🌫 Visibility: ${data.current.vis_km} km  
+        <br>📊 Pressure: ${data.current.pressure_mb} mb  
+        <br>☁️ Cloud: ${data.current.cloud}%  
+        <br>☀️ UV: ${data.current.uv}
+      </div>
+
+      <hr>
+
+      <div class="details">
+        🌍 <b>Air Quality</b>  
+        <br>CO: ${data.current.air_quality.co.toFixed(1)}  
+        <br>NO₂: ${data.current.air_quality.no2.toFixed(1)}  
+        <br>O₃: ${data.current.air_quality.o3.toFixed(1)}  
+        <br>PM2.5: ${data.current.air_quality.pm2_5.toFixed(1)}
+      </div>
+    `;
+  })
+  .catch(()=>{
+    document.getElementById("result").innerHTML = "❌ City not found";
+  });
+}
+</script>
+
+</body>
+</html>
